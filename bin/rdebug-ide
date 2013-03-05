@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+#
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'optparse'
+require 'ostruct'
+require 'debugger'
+require 'ruby-debug/ide_processor'
+
+$stdout.sync = true
+
+class RdebugIde
+
+  def initialize
+    check_argv!
+    Debugger.const_set("ARGV", ARGV.clone)
+    Debugger.const_set("RDEBUG_SCRIPT", rdebug_path)
+    install_interruption_hander
+    Debugger.tracing = options.tracing
+    Debugger.wait_for_start = options.wait_for_start
+    Debugger.wait_connection = true
+    Debugger.printer = Printers::Xml.new
+    Debugger.const_set("PROG_SCRIPT", ARGV.shift)
+  end
+
+  def run
+    Debugger.start_remote_ide(options.host, options.port)
+    bt = Debugger.debug_load(Debugger::PROG_SCRIPT, false, false)
+    if bt
+      print bt.backtrace.map{|l| "\t#{l}"}.join("\n"), "\n"
+      print "Uncaught exception: #{bt}\n"
+    end
+  end
+
+  private
+
+    def check_argv!
+      if ARGV.empty?
+        puts opts
+        puts
+        puts "Must specify a script to run"
+        exit(1)
+      end
+    end
+
+    def install_interruption_hander
+      trap('INT') { Debugger.interrupt_last }
+    end
+
+    def rdebug_path
+      File.expand_path($0).tap do |path|
+        if RUBY_PLATFORM =~ /mswin/
+          rdebug_path << ".cmd" unless rdebug_path =~ /\.cmd$/i
+        end
+      end
+    end
+
+    def options
+      opts
+      @options
+    end
+
+    def opts
+      @opts ||= begin
+        @options = OpenStruct.new(host: "127.0.0.1", port: 12345, stop: false, tracing: false, wait_for_start: true)
+        opts = OptionParser.new do |opts|
+          opts.banner = %{
+            Using rdebug-ide
+            Usage: rdebug-ide is supposed to be called from RDT, NetBeans, RubyMine or
+            vim-ruby-debugger. The command line interface to 'debugger' is rdebug.
+          }.gsub(/^\s*/, '')
+          opts.separator ""
+          opts.separator "Options:"
+          opts.on("-h", "--host HOST", "Host name used for remote debugging") { |host| @options.host = host }
+          opts.on("--cport PORT", Integer, "Port used for control commands") { |cport| @options.cport = cport }
+          opts.on("-p", "--port PORT", Integer, "Port used for remote debugging") { |port| @options.port = port }
+          opts.on("--wait", String, "Wait for 'start' command") do |bool|
+            @options.wait_for_start = (bool == "false" ? false : true)
+          end
+          opts.on('--stop', 'stop when the script is loaded') { @options.stop = true }
+          opts.on("-x", "--trace", "turn on line tracing") { @options.tracing = true }
+          opts.on("-I", "--include PATH", String, "Add PATH to $LOAD_PATH") { |path| $LOAD_PATH.unshift(path) }
+        end
+        opts.parse!
+        opts
+      end
+    end
+
+end
+
+RdebugIde.new.run
