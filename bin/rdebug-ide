@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'optparse'
 require 'ostruct'
 require 'debugger'
-require 'ruby-debug/ide_processor'
+require 'debugger/xml'
 
 $stdout.sync = true
 
