@@ -1,4 +1,5 @@
 require 'ruby-debug/processor'
+require 'debugger/xml/ide/processor'
 
 module Debugger
   module Xml

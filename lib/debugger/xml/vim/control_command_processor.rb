@@ -1,3 +1,5 @@
+require 'debugger/xml/ide/control_command_processor'
+
 module Debugger
   module Xml
     module Vim
