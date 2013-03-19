@@ -41,9 +41,16 @@ describe "Printers::Xml" do
     }
   end
 
+  def yaml_file_path(filename)
+    File.expand_path(
+      File.join("..", "..", "..", "lib", "debugger", "printers", "texts", "#{filename}.yml"),
+      __FILE__
+    )
+  end
+
   before do
     YAML.stubs(:load_file).with(yaml_file_path('xml')).returns(yaml_xml)
-    YAML.stubs(:load_file).with(yaml_file_path('base')).returns({})
+    YAML.stubs(:load_file).with(regexp_matches(/base/)).returns({})
   end
 
   describe "#print" do

@@ -1,12 +1,12 @@
-require_relative 'test_helper'
-require 'debugger/xml/ide_processor'
+require_relative '../test_helper'
+require 'debugger/xml/ide/processor'
 
-describe Debugger::Xml::IdeProcessor do
+describe Debugger::Xml::Ide::Processor do
   include TestDsl
 
   before { Thread.stubs(:stop) }
 
-  let(:klass) { Debugger::Xml::IdeProcessor }
+  let(:klass) { Debugger::Xml::Ide::Processor }
   let(:interface) { TestInterface.new }
   let(:breakpoint) { stub }
   let(:context) { stub(thread: nil, stop_reason: nil, thnum: 1, stack_size: 2) }

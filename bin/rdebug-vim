@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'optparse'
+require 'ostruct'
+require 'debugger'
+require 'debugger/xml'
+
+$stdout.sync = true
+
+class RdebugVim
+
+  def initialize
+    check_argv!
+    Debugger.const_set("RDEBUG_SCRIPT", File.expand_path($0))
+    install_interruption_hander
+    Debugger.tracing = false
+    Debugger.wait_for_start = true
+    Debugger.printer = Printers::Xml.new
+    Debugger.const_set("PROG_SCRIPT", ARGV.shift)
+  end
+
+  def run
+    Debugger.start_for_vim(options)
+    bt = Debugger.debug_load(Debugger::PROG_SCRIPT, false, false)
+    if bt
+      print bt.backtrace.map{|l| "\t#{l}"}.join("\n"), "\n"
+      print "Uncaught exception: #{bt}\n"
+    end
+  end
+
+  private
+
+    def check_argv!
+      if ARGV.empty?
+        puts opts
+        puts
+        puts "Must specify a script to run"
+        exit(1)
+      end
+    end
+
+    def install_interruption_hander
+      trap('INT') { Debugger.interrupt_last }
+    end
+
+    def options
+      opts
+      @options
+    end
+
+    def opts
+      @opts ||= begin
+        @options = OpenStruct.new
+        opts = OptionParser.new do |opts|
+          opts.banner = %{
+            Using rdebug-vim
+            Usage: rdebug-vim is supposed to be called from vim-ruby-debugger.
+            The command line interface to 'debugger' is rdebug.
+          }.gsub(/^\s*/, '')
+          opts.separator ""
+          opts.separator "Options:"
+          opts.on("-f", "--file FILE", String, "File for communication with Vim") { |file| @options.file = file }
+          opts.on("-o", "--output FILE", String, "File where standard/error output is sent to") do |file|
+            @options.output_file = file
+          end
+          opts.on("-s", "--socket FILE", String, "Socket file to communicate with debugger") do |file|
+            @options.socket = file
+          end
+          opts.on("-lf", "--logger_file FILE", String, "File for logging") { |file| @options.logger_file = file }
+          opts.on("-dm", "--debug_mode MODE", Integer, "Debug mode") { |mode| @options.debug_mode = mode == 1 }
+          opts.on("-ve", "--vim_executable FILE", String, "Vim executable file (e.g., 'mvim')") do |file|
+            @options.vim_executable = file
+          end
+          opts.on("-vs", "--vim_servername NAME", String, "Vim servername (e.g., 'VIM')") do |name|
+            @options.vim_servername = name
+          end
+          opts.on("-spr", "--separator NAME", String, "Output results separator") do |name|
+            @options.separator = name
+          end
+          opts.on("-I", "--include PATH", String, "Add PATH to $LOAD_PATH") { |path| $LOAD_PATH.unshift(path) }
+        end
+        opts.parse!
+        opts
+      end
+    end
+
+end
+
+RdebugVim.new.run
