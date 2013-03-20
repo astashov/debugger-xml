@@ -7,7 +7,8 @@ module Debugger
       return if @control_thread
       daemonize!
       $stdout.reopen(options.output_file, 'w')
-      $stderr.reopen(options.output_file, 'w')
+      $stdout.sync
+      $stderr.reopen($stdout)
       @mutex = Mutex.new
       @proceed = ConditionVariable.new
       start

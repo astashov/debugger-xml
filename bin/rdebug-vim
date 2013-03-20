@@ -6,8 +6,6 @@ require 'ostruct'
 require 'debugger'
 require 'debugger/xml'
 
-$stdout.sync = true
-
 class RdebugVim
 
   def initialize
