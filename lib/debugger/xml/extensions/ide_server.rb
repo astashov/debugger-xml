@@ -10,9 +10,9 @@ module Debugger
       @control_thread = DebugThread.new do
         server = TCPServer.new(host, port)
         while (session = server.accept)
-          interface = Xml::IdeInterface.new(session)
-          processor = Xml::IdeControlCommandProcessor.new(interface)
-          self.handler = Xml::IdeProcessor.new(interface)
+          interface = Xml::Ide::Interface.new(session)
+          processor = Xml::Ide::ControlCommandProcessor.new(interface)
+          self.handler = Xml::Ide::Processor.new(interface)
           processor.process_commands
         end
       end
