@@ -15,7 +15,7 @@ class RdebugVim
     Debugger.tracing = false
     Debugger.wait_for_start = true
     Debugger.printer = Printers::Xml.new
-    Debugger.const_set("PROG_SCRIPT", ARGV.shift)
+    Debugger.const_set("PROG_SCRIPT", options.script)
   end
 
   def run
@@ -79,7 +79,7 @@ class RdebugVim
           opts.on("-I", "--include PATH", String, "Add PATH to $LOAD_PATH") { |path| $LOAD_PATH.unshift(path) }
         end
         opts.parse!
-        opts
+        @options.script = ARGV.shift
       end
     end
 
