@@ -81,6 +81,7 @@ module Debugger
             @file = nil
             @context = nil
             @last_breakpoint = nil
+            InspectCommand.clear_references
           end
 
           def stop_thread
