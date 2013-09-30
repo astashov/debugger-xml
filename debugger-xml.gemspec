@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{XML interface for debugger}
   gem.summary       = %q{Implements XML interface for the 'debugger' gem, compatible with ruby-debug-ide gem}
   gem.homepage      = ""
+  gem.license       = 'MIT'
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
