@@ -14,7 +14,7 @@ class RdebugIde
     check_argv!
     Debugger.const_set("ARGV", ARGV.clone)
     Debugger.const_set("RDEBUG_SCRIPT", rdebug_path)
-    install_interruption_hander
+    install_interruption_hander if options.int_handler
     Debugger.tracing = options.tracing
     Debugger.wait_for_start = options.wait_for_start
     Debugger.wait_connection = true
@@ -61,7 +61,7 @@ class RdebugIde
 
     def opts
       @opts ||= begin
-        @options = OpenStruct.new(host: "127.0.0.1", port: 12345, stop: false, tracing: false, wait_for_start: true)
+        @options = OpenStruct.new(host: "127.0.0.1", port: 12345, stop: false, tracing: false, wait_for_start: true, int_handler: true)
         opts = OptionParser.new do |opts|
           opts.banner = %{
             Using rdebug-ide
@@ -79,6 +79,7 @@ class RdebugIde
           opts.on('--stop', 'stop when the script is loaded') { @options.stop = true }
           opts.on("-x", "--trace", "turn on line tracing") { @options.tracing = true }
           opts.on("-I", "--include PATH", String, "Add PATH to $LOAD_PATH") { |path| $LOAD_PATH.unshift(path) }
+          opts.on('--disable-int-handler', 'Disables interrupt signal handler') { options.int_handler = false }
         end
         opts.parse!
         opts
