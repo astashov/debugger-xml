@@ -79,7 +79,7 @@ class RdebugIde
           opts.on('--stop', 'stop when the script is loaded') { @options.stop = true }
           opts.on("-x", "--trace", "turn on line tracing") { @options.tracing = true }
           opts.on("-I", "--include PATH", String, "Add PATH to $LOAD_PATH") { |path| $LOAD_PATH.unshift(path) }
-          opts.on('--disable-int-handler', 'Disables interrupt signal handler') { options.int_handler = false }
+          opts.on('--disable-int-handler', 'Disables interrupt signal handler') { @options.int_handler = false }
         end
         opts.parse!
         opts
