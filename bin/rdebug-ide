@@ -14,7 +14,7 @@ class RdebugIde
     check_argv!
     Debugger.const_set("ARGV", ARGV.clone)
     Debugger.const_set("RDEBUG_SCRIPT", rdebug_path)
-    install_interruption_hander if options.int_handler
+    install_interruption_handler if options.int_handler
     Debugger.tracing = options.tracing
     Debugger.wait_for_start = options.wait_for_start
     Debugger.wait_connection = true
@@ -25,6 +25,7 @@ class RdebugIde
     else
       Debugger::Xml::FakeLogger.new
     end
+    init_multi_process_debug(options.dispatcher_port) if options.dispatcher_port
   end
 
   def run
@@ -38,7 +39,15 @@ class RdebugIde
 
   private
 
-    def check_argv!
+  def init_multi_process_debug(options)
+    ENV['IDE_PROCESS_DISPATCHER'] = options.dispatcher_port.to_s
+    ENV['DEBUGGER_STORED_RUBYLIB'] = ENV['RUBYLIB']
+    old_opts = ENV['RUBYOPT']
+    ENV['RUBYOPT'] = "-r#{File.expand_path(File.dirname(__FILE__))}/../lib/debugger/xml/multiprocess/starter"
+    ENV['RUBYOPT'] += " #{old_opts}" if old_opts
+  end
+
+  def check_argv!
       if ARGV.empty?
         puts opts
         puts
@@ -47,7 +56,7 @@ class RdebugIde
       end
     end
 
-    def install_interruption_hander
+    def install_interruption_handler
       trap('INT') { Debugger.interrupt_last }
     end
 
@@ -68,7 +77,7 @@ class RdebugIde
       @opts ||= begin
         @options = OpenStruct.new(
           host: "127.0.0.1", port: 12345, stop: false, tracing: false, wait_for_start: true,
-          int_handler: true, debug_mode: false
+          int_handler: true, debug_mode: false, dispatcher_port: nil
         )
         opts = OptionParser.new do |opts|
           opts.banner = %{
@@ -82,6 +91,9 @@ class RdebugIde
           opts.on("-d", "--debug", "Enable debug mode") { |host| @options.debug_mode = true }
           opts.on("--cport PORT", Integer, "Port used for control commands") { |cport| @options.cport = cport }
           opts.on("-p", "--port PORT", Integer, "Port used for remote debugging") { |port| @options.port = port }
+          opts.on("--dispatcher-port PORT", Integer, "Port used for multi-process debugging dispatcher") do |dp|
+            options.dispatcher_port = dp
+          end
           opts.on("--wait", String, "Wait for 'start' command") do |bool|
             @options.wait_for_start = (bool == "false" ? false : true)
           end
