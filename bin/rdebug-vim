@@ -16,6 +16,11 @@ class RdebugVim
     Debugger.wait_for_start = true
     Debugger.printer = Printers::Xml.new
     Debugger.const_set("PROG_SCRIPT", options.script)
+    Debugger::Xml.logger = if options.debug_mode
+       Debugger::Xml::Vim::Logger.new(options.logger_file)
+    else
+       Debugger::Xml::FakeLogger.new
+    end
   end
 
   def run

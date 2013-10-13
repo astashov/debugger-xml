@@ -20,6 +20,11 @@ class RdebugIde
     Debugger.wait_connection = true
     Debugger.printer = Printers::Xml.new
     Debugger.const_set("PROG_SCRIPT", ARGV.shift)
+    Debugger::Xml.logger = if options.debug_mode
+      Debugger::Xml::Ide::Logger.new
+    else
+      Debugger::Xml::FakeLogger.new
+    end
   end
 
   def run
@@ -61,7 +66,10 @@ class RdebugIde
 
     def opts
       @opts ||= begin
-        @options = OpenStruct.new(host: "127.0.0.1", port: 12345, stop: false, tracing: false, wait_for_start: true, int_handler: true)
+        @options = OpenStruct.new(
+          host: "127.0.0.1", port: 12345, stop: false, tracing: false, wait_for_start: true,
+          int_handler: true, debug_mode: false
+        )
         opts = OptionParser.new do |opts|
           opts.banner = %{
             Using rdebug-ide
@@ -71,6 +79,7 @@ class RdebugIde
           opts.separator ""
           opts.separator "Options:"
           opts.on("-h", "--host HOST", "Host name used for remote debugging") { |host| @options.host = host }
+          opts.on("-d", "--debug", "Enable debug mode") { |host| @options.debug_mode = true }
           opts.on("--cport PORT", Integer, "Port used for control commands") { |cport| @options.cport = cport }
           opts.on("-p", "--port PORT", Integer, "Port used for remote debugging") { |port| @options.port = port }
           opts.on("--wait", String, "Wait for 'start' command") do |bool|
