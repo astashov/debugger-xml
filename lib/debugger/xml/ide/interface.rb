@@ -50,7 +50,9 @@ module Debugger
         def read_command(*args)
           result = non_blocking_gets
           raise IOError unless result
-          result.chomp
+          result.chomp.tap do |r|
+            Xml.logger.puts("Read command: #{r}")
+          end
         end
 
         def readline_support?
@@ -58,7 +60,10 @@ module Debugger
         end
 
         def print(*args)
-          @socket.printf(*escape_input(args))
+          escaped_args = escape_input(args)
+          value = escaped_args.first % escaped_args[1..-1]
+          Xml.logger.puts("Going to print: #{value}")
+          @socket.printf(value)
         end
 
       end

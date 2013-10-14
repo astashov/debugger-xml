@@ -11,7 +11,10 @@ module Debugger
         end
 
         def print(*args)
-          @output << sprintf(*escape_input(args))
+          escaped_args = escape_input(args)
+          value = escaped_args.first % escaped_args[1..-1]
+          Xml.logger.puts("Going to print: #{value}")
+          @output << sprintf(value)
         end
 
         def send_response
