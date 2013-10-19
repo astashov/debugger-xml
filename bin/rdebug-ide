@@ -77,7 +77,7 @@ class RdebugIde
       @opts ||= begin
         @options = OpenStruct.new(
           host: "127.0.0.1", port: 12345, stop: false, tracing: false, wait_for_start: true,
-          int_handler: true, debug_mode: false, dispatcher_port: nil
+          int_handler: true, debug_mode: false, dispatcher_port: nil, dispatcher_port: nil
         )
         opts = OptionParser.new do |opts|
           opts.banner = %{
