@@ -17,7 +17,7 @@ module Debugger
             tracing: false,
             wait_for_start: true,
             int_handler: true,
-            debug_mode: false,
+            debug_mode: (ENV['DEBUGGER_DEBUG_MODE'] == 'true'),
             dispatcher_port: ENV['IDE_PROCESS_DISPATCHER']
           )
 

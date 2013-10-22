@@ -41,7 +41,8 @@ class RdebugIde
 
   def init_multi_process_debug(options)
     ENV['IDE_PROCESS_DISPATCHER'] = options.dispatcher_port.to_s
-    ENV['DEBUGGER_HOST'] = options.host
+    ENV['DEBUGGER_HOST'] = options.host.to_s
+    ENV['DEBUGGER_DEBUG_MODE'] = options.debug_mode.to_s
     ENV['DEBUGGER_STORED_RUBYLIB'] = ENV['RUBYLIB']
     old_opts = ENV['RUBYOPT']
     ENV['RUBYOPT'] = "-r#{File.expand_path(File.dirname(__FILE__))}/../lib/debugger/xml/multiprocess/starter"
