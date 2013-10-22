@@ -25,7 +25,7 @@ class RdebugIde
     else
       Debugger::Xml::FakeLogger.new
     end
-    init_multi_process_debug(options.dispatcher_port) if options.dispatcher_port
+    init_multi_process_debug(options) if options.dispatcher_port
   end
 
   def run
@@ -39,8 +39,9 @@ class RdebugIde
 
   private
 
-  def init_multi_process_debug(dispatcher_port)
-    ENV['IDE_PROCESS_DISPATCHER'] = dispatcher_port.to_s
+  def init_multi_process_debug(options)
+    ENV['IDE_PROCESS_DISPATCHER'] = options.dispatcher_port.to_s
+    ENV['DEBUGGER_HOST'] = options.host
     ENV['DEBUGGER_STORED_RUBYLIB'] = ENV['RUBYLIB']
     old_opts = ENV['RUBYOPT']
     ENV['RUBYOPT'] = "-r#{File.expand_path(File.dirname(__FILE__))}/../lib/debugger/xml/multiprocess/starter"
