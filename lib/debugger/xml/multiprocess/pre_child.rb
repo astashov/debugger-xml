@@ -11,14 +11,14 @@ module Debugger
           port = find_free_port(host)
 
           options = OpenStruct.new(
-            'frame_bind'  => false,
-            'host'        => host,
-            'load_mode'   => false,
-            'port'        => port,
-            'stop'        => false,
-            'tracing'     => false,
-            'int_handler' => true,
+            host: host,
+            port: port,
+            stop: false,
+            tracing: false,
             wait_for_start: true,
+            int_handler: true,
+            debug_mode: false,
+            dispatcher_port: ENV['IDE_PROCESS_DISPATCHER']
           )
 
           acceptor_host, acceptor_port = ENV['IDE_PROCESS_DISPATCHER'].split(":")
@@ -55,10 +55,15 @@ module Debugger
           end
 
           # set options
-          Debugger.keep_frame_binding = options.frame_bind
           Debugger.tracing = options.tracing
           Debugger.wait_for_start = options.wait_for_start
-
+          Debugger.wait_connection = true
+          Debugger.printer = Printers::Xml.new
+          Debugger::Xml.logger = if options.debug_mode
+            Debugger::Xml::Ide::Logger.new
+          else
+            Debugger::Xml::FakeLogger.new
+          end
           Debugger.start_remote_ide(options)
         end
 
