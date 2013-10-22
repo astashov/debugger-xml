@@ -11,6 +11,10 @@ module Debugger
         $stderr.printf "Fast Debugger (debugger-xml #{Xml::VERSION}) listens on #{host}:#{port}\n"
         server = TCPServer.new(host, port)
         while (session = server.accept)
+          dispatcher = ENV['IDE_PROCESS_DISPATCHER']
+          if dispatcher && !dispatcher.include?(":")
+            ENV['IDE_PROCESS_DISPATCHER'] = "#{session.peeraddr[2]}:#{dispatcher}"
+          end
           interface = Xml::Ide::Interface.new(session)
           processor = Xml::Ide::ControlCommandProcessor.new(interface)
           self.handler = Xml::Ide::Processor.new(interface)
