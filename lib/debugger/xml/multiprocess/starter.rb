@@ -4,5 +4,5 @@ if ENV['IDE_PROCESS_DISPATCHER']
     $LOAD_PATH << path
   end
   require 'debugger/xml'
-  Debugger::MultiProcess::pre_child
+  Debugger::Xml::MultiProcess::pre_child
 end
