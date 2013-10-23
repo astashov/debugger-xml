@@ -1,7 +1,7 @@
 module Debugger
   module ThreadFunctions # :nodoc:
     def thread_arguments_with_pid(context, should_show_top_frame = true)
-      thread_arguments_without_pid().merge(pid: Process.pid)
+      thread_arguments_without_pid(context, should_show_top_frame).merge(pid: Process.pid)
     end
 
     alias_method :thread_arguments_without_pid, :thread_arguments
