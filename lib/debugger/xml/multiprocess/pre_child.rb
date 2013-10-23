@@ -64,7 +64,7 @@ module Debugger
           else
             Debugger::Xml::FakeLogger.new
           end
-          Debugger.start_remote_ide(options)
+          Debugger.start_remote_ide(options.host, options.port)
         end
 
 
