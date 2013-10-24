@@ -1,4 +1,11 @@
 module Debugger
+  module VarFunctions # :nodoc:
+
+    def var_global
+      var_list(global_variables.reject { |v| [:$=, :$KCODE, :$-K, :$FILENAME].include?(v) })
+    end
+
+  end
   class VarInstanceCommand < Command
 
     def execute_with_xml(*args)
