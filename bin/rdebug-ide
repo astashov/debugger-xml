@@ -43,7 +43,7 @@ class RdebugIde
     ENV['IDE_PROCESS_DISPATCHER'] = options.dispatcher_port.to_s
     ENV['DEBUGGER_HOST'] = options.host.to_s
     ENV['DEBUGGER_DEBUG_MODE'] = options.debug_mode.to_s
-    ENV['DEBUGGER_STORED_RUBYLIB'] = ENV['RUBYLIB']
+    ENV['DEBUGGER_STORED_RUBYLIB'] = $LOAD_PATH.join(File::PATH_SEPARATOR)
     old_opts = ENV['RUBYOPT']
     ENV['RUBYOPT'] = "-r#{File.expand_path(File.dirname(__FILE__))}/../lib/debugger/xml/multiprocess/starter"
     ENV['RUBYOPT'] += " #{old_opts}" if old_opts
