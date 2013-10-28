@@ -23,7 +23,7 @@ module Debugger
 
           #{private ? "private" : ""}
           def exec(*args)
-            Debugger.interface.close
+            Debugger.handler.interface.close
             pre_debugger_exec(*args)
           end
         }
