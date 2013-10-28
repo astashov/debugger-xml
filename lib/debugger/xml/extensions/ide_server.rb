@@ -1,6 +1,6 @@
 module Debugger
   class << self
-    attr_accessor :wait_for_start
+    attr_accessor :wait_for_start, :control_thread
 
     def start_remote_ide(host, port)
       return if @control_thread
