@@ -9,7 +9,7 @@ describe "Thread Command" do
     thnum = nil
     enter 'break 8', 'cont', 'thread list', release
     debug_file('thread') { thnum = Debugger.contexts.first.thnum }
-    check_output_includes %{<threads><thread id="#{thnum}" status="run" current="yes"/></threads>}
+    check_output_includes %{<threads><thread id="#{thnum}" status="run" current="yes" pid="#{Process.pid}"/></threads>}
   end
 
   it "must show 3 available threads" do
