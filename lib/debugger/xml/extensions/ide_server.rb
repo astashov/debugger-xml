@@ -8,8 +8,8 @@ module Debugger
       @proceed = ConditionVariable.new
       start
       @control_thread = DebugThread.new do
-        $stderr.printf "Fast Debugger (debugger-xml #{Xml::VERSION}) listens on #{host}:#{port}\n"
         server = TCPServer.new(host, port)
+        $stderr.printf "Fast Debugger (debugger-xml #{Xml::VERSION}) listens on #{host}:#{port}\n"
         while (session = server.accept)
           dispatcher = ENV['IDE_PROCESS_DISPATCHER']
           if dispatcher && !dispatcher.include?(":")
