@@ -3,6 +3,7 @@ module Debugger
     module MultiProcess
       class << self
         def pre_child
+          return unless ENV['IDE_PROCESS_DISPATCHER']
 
           require 'socket'
           require 'ostruct'
