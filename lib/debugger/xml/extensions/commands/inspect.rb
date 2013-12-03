@@ -20,5 +20,11 @@ module Debugger
         print prv({eval_result: obj}, "local")
       end
     end
+
+    def help
+      %{
+        v[ar] instpect <object>\tinpect a given object (supposed to be used only from ide)
+      }
+    end
   end
 end
