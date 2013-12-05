@@ -63,7 +63,7 @@ module Debugger
           escaped_args = escape_input(args)
           value = escaped_args.first % escaped_args[1..-1]
           Xml.logger.puts("Going to print: #{value}")
-          @socket.printf(value)
+          @socket.print(value)
         end
 
       end
