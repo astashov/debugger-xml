@@ -1,10 +1,10 @@
 require_relative '../test_helper'
-require 'debugger/xml/vim/notification'
+require 'debugger_xml/vim/notification'
 
-describe Debugger::Xml::Vim::Notification do
+describe DebuggerXml::Vim::Notification do
   include TestDsl
 
-  let(:klass) { Debugger::Xml::Vim::Notification }
+  let(:klass) { DebuggerXml::Vim::Notification }
   let(:options) do
     stub(vim_executable: "vim", vim_servername: "VIM", debug_mode: true, logger_file: filename)
   end

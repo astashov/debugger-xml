@@ -1,21 +1,26 @@
 require_relative '../test_helper'
-require 'debugger/xml/ide/control_command_processor'
+require 'debugger_xml/ide/control_command_processor'
 
-describe Debugger::Xml::Ide::ControlCommandProcessor do
+describe DebuggerXml::Ide::ControlCommandProcessor do
   include TestDsl
 
-  let(:klass) { Debugger::Xml::Ide::ControlCommandProcessor }
-  let(:interface) { Debugger.handler.interface }
+  let(:klass) { DebuggerXml::Ide::ControlCommandProcessor }
+  let(:interface) { $proxy.handler.interface }
   let(:file) { fullpath('jump') }
   let(:context) { stub(frame_binding: stub, stop_reason: nil, thread: stub, thnum: 1, stack_size: 2, dead?: false) }
-  subject { klass.new(interface) }
-  temporary_change_method_value(Debugger, :handler, Debugger::Xml::Ide::Processor.new(TestInterface.new))
+  subject { klass.new(interface, $proxy) }
 
   before do
     Thread.stubs(:stop)
-    Debugger.handler.instance_variable_set("@context", context)
-    Debugger.handler.instance_variable_set("@file", file)
-    Debugger.handler.instance_variable_set("@line", 30)
+    @handler = $proxy.handler
+    $proxy.handler = DebuggerXml::Ide::Processor.new(TestInterface.new, $proxy)
+    $proxy.handler.instance_variable_set("@context", context)
+    $proxy.handler.instance_variable_set("@file", file)
+    $proxy.handler.instance_variable_set("@line", 30)
+  end
+
+  after do
+    $proxy.handler = @handler
   end
 
   it "must process a control command" do
@@ -34,22 +39,22 @@ describe Debugger::Xml::Ide::ControlCommandProcessor do
   it "must show error if there is no such command" do
     enter 'bla'
     subject.process_commands
-    check_output_includes "Unknown command: bla"
+    check_output_includes "<error>Unknown command: bla</error>"
   end
 
   it "must show error if context is dead" do
     context.expects(:dead?).returns(true)
     enter 'step'
     subject.process_commands
-    check_output_includes "Command is unavailable"
+    check_output_includes "<error>Command is unavailable</error>"
   end
 
   it "must show error if no suspended thread" do
-    Debugger.handler.stubs(:at_line?).returns(false)
+    $proxy.handler.stubs(:at_line?).returns(false)
     enter 'step'
     subject.process_commands
     check_output_includes(
-      "There is no thread suspended at the time and therefore no context to execute 'step'",
+      "<error>There is no thread suspended at the time and therefore no context to execute 'step'</error>",
     interface.error_queue)
   end
 

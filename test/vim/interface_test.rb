@@ -1,10 +1,10 @@
 require_relative '../test_helper'
-require 'debugger/xml/vim/interface'
+require 'debugger_xml/vim/interface'
 
-describe Debugger::Xml::Vim::Interface do
+describe DebuggerXml::Vim::Interface do
   include TestDsl
 
-  let(:klass) { Debugger::Xml::Vim::Interface }
+  let(:klass) { DebuggerXml::Vim::Interface }
   let(:options) do
     stub(debug_mode: false, file: filename, separator: "--sep--")
   end
@@ -22,7 +22,7 @@ describe Debugger::Xml::Vim::Interface do
   end
 
   it "must send command to Vim" do
-    Debugger::Xml::Vim::Notification.expects(:new).with("receive_command", options).returns(notification)
+    DebuggerXml::Vim::Notification.expects(:new).with("receive_command", options).returns(notification)
     subject.print("foo")
     subject.print("bar")
     subject.send_response
@@ -30,7 +30,7 @@ describe Debugger::Xml::Vim::Interface do
   end
 
   it "must clear the queue after sending response" do
-    Debugger::Xml::Vim::Notification.stubs(:new).with("receive_command", options).returns(notification)
+    DebuggerXml::Vim::Notification.stubs(:new).with("receive_command", options).returns(notification)
     subject.print("foo")
     subject.print("bar")
     subject.send_response
@@ -40,7 +40,7 @@ describe Debugger::Xml::Vim::Interface do
   end
 
   it "must not send any command if there is nothing to send" do
-    Debugger::Xml::Vim::Notification.expects(:new).never
+    DebuggerXml::Vim::Notification.expects(:new).never
     subject.send_response
     File.read(filename).strip.must_equal ""
   end

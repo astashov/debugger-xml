@@ -1,4 +1,5 @@
 require_relative '../test_helper'
+require 'ostruct'
 
 describe "Printers::Xml" do
   include PrinterHelpers

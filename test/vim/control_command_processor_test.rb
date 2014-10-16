@@ -1,15 +1,14 @@
 require_relative '../test_helper'
-require 'debugger/xml/vim/control_command_processor'
+require 'debugger_xml/vim/control_command_processor'
 
-describe Debugger::Xml::Vim::ControlCommandProcessor do
+describe DebuggerXml::Vim::ControlCommandProcessor do
   include TestDsl
 
-  let(:klass) { Debugger::Xml::Vim::ControlCommandProcessor }
+  let(:klass) { DebuggerXml::Vim::ControlCommandProcessor }
   let(:interface) { Debugger.handler.interface }
   let(:file) { fullpath('jump') }
   let(:context) { stub(frame_binding: stub, stop_reason: nil, thread: stub, thnum: 1, stack_size: 2, dead?: false) }
-  subject { klass.new(interface) }
-  temporary_change_method_value(Debugger, :handler, Debugger::Xml::Ide::Processor.new(TestInterface.new))
+  subject { klass.new(interface, $proxy) }
 
   before do
     Thread.stubs(:stop)

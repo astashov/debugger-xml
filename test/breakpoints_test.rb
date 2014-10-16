@@ -2,7 +2,6 @@ require_relative 'test_helper'
 
 describe "Breakpoints" do
   include TestDsl
-  temporary_change_method_value(Debugger, :printer, Printers::Xml.new)
 
   describe "setting breakpoint in the current file" do
     it "must return right response" do

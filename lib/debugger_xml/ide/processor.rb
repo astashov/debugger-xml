@@ -28,6 +28,7 @@ module DebuggerXml
       end
 
       attr_reader :context, :file, :line, :display
+      attr_accessor :interface
 
       def initialize(interface, proxy)
         @mutex = Mutex.new

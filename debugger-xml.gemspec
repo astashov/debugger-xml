@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'debugger/xml/version'
+require 'debugger_xml/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "debugger-xml"
-  gem.version       = Debugger::Xml::VERSION
+  gem.version       = DebuggerXml::VERSION
   gem.authors       = ["Anton Astashov"]
   gem.email         = ["anton.astashov@gmail.com"]
   gem.description   = %q{XML interface for debugger}

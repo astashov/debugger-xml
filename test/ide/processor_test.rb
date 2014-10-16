@@ -1,17 +1,17 @@
 require_relative '../test_helper'
-require 'debugger/xml/ide/processor'
+require 'debugger_xml/ide/processor'
 
-describe Debugger::Xml::Ide::Processor do
+describe DebuggerXml::Ide::Processor do
   include TestDsl
 
   before { Thread.stubs(:stop) }
 
-  let(:klass) { Debugger::Xml::Ide::Processor }
+  let(:klass) { DebuggerXml::Ide::Processor }
   let(:interface) { TestInterface.new }
   let(:breakpoint) { stub }
   let(:context) { stub(thread: nil, stop_reason: nil, thnum: 1, stack_size: 2) }
   let(:file) { fullpath('jump') }
-  subject { klass.new(interface) }
+  subject { klass.new(interface, $proxy) }
 
   describe "#at_breakpoint" do
     it "must assign breakpoint to instance variable" do
@@ -35,20 +35,13 @@ describe Debugger::Xml::Ide::Processor do
     describe "print current position" do
       it "must print if context is nil" do
         subject.at_line(nil, file, 30)
-        check_output_includes "#{file}:30"
-      end
-
-      it "must print in xml" do
-        temporary_change_method_value(Debugger, :printer, Printers::Xml.new) do
-          subject.at_line(nil, file, 30)
-          check_output_includes %{<suspended file="#{file}" line="30" threadId="" frames=""/>}
-        end
+        check_output_includes %{<suspended file="#{file}" line="30" threadId="" frames=""/>}
       end
 
       it "must print if stop reason is :step" do
         context.stubs(:stop_reason).returns(:step)
         subject.at_line(context, file, 30)
-        check_output_includes "#{file}:30"
+        check_output_includes %{<suspended file="#{file}" line="30" threadId="1" frames="2"/>}
       end
 
       it "must clear instance variables after resuming thread" do
@@ -59,26 +52,19 @@ describe Debugger::Xml::Ide::Processor do
 
       describe "print breakpoint after at_breakpoint" do
         before do
-          Debugger.stubs(:breakpoints).returns([breakpoint])
-          Debugger.stubs(:current_context).returns(stub(thnum: 1))
+          $proxy.stubs(:breakpoints).returns([breakpoint])
+          $proxy.stubs(:current_context).returns(stub(thnum: 1))
           subject.instance_variable_set("@last_breakpoint", breakpoint)
         end
 
         it "must print in plain text" do
           subject.at_line(context, file, 30)
-          check_output_includes "Breakpoint 1 at #{file}:30"
-        end
-
-        it "must print in xml" do
-          temporary_change_method_value(Debugger, :printer, Printers::Xml.new) do
-            subject.at_line(context, file, 30)
-            check_output_includes %{<breakpoint file="#{file}" line="30" threadId="1"/>}
-          end
+          check_output_includes %{<breakpoint file="#{file}" line="30" threadId="1"/>}
         end
       end
 
       it "must show error if current thread is DebugThread" do
-        context.stubs(:thread).returns(Debugger::DebugThread.new {})
+        context.stubs(:thread).returns($proxy.debug_thread_class.new {})
         subject.at_line(context, file, 30)
         check_output_includes /DebuggerThread are not supposed to be traced/
       end
@@ -106,7 +92,7 @@ describe Debugger::Xml::Ide::Processor do
 
     it "prints current file and line" do
       subject.at_return(context, file, 30)
-      check_output_includes "#{file}:30"
+      check_output_includes %{<suspended file="#{file}" line="30" threadId="1" frames="2"/>}
     end
 
     it "stops the thread" do

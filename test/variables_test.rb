@@ -2,7 +2,6 @@ require_relative 'test_helper'
 
 describe "Variables Command" do
   include TestDsl
-  temporary_change_method_value(Debugger, :printer, Printers::Xml.new)
 
   describe "constants" do
     it "must show constants" do
