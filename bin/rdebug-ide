@@ -12,14 +12,17 @@ class RdebugIde
 
   def initialize
     check_argv!
-    Debugger.const_set("ARGV", ARGV.clone)
-    Debugger.const_set("RDEBUG_SCRIPT", rdebug_path)
-    install_interruption_handler if options.int_handler
-    Debugger.tracing = options.tracing
-    Debugger.wait_for_start = options.wait_for_start
-    Debugger.wait_connection = true
-    Debugger.printer = Printers::Xml.new
-    Debugger.const_set("PROG_SCRIPT", ARGV.shift)
+    @proxy = DebuggerXml::DebuggerProxy.new
+    @proxy.set_argv(ARGV.clone)
+    @proxy.set_rdebug_script(rdebug_path)
+    @proxy.set_prog_script(ARGV.shift)
+    if options.int_handler
+      install_interruption_handler
+    end
+    @proxy.tracing = options.tracing
+    @proxy.printer = Printers::Xml.new
+    @proxy.wait_connection = true
+    DebuggerXml.wait_for_start = options.wait_for_start
     Debugger::Xml.logger = if options.debug_mode
       Debugger::Xml::Ide::Logger.new
     else
@@ -59,7 +62,7 @@ class RdebugIde
     end
 
     def install_interruption_handler
-      trap('INT') { Debugger.interrupt_last }
+      trap('INT') { @proxy.interrupt_last }
     end
 
     def rdebug_path

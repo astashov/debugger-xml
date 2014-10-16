@@ -4,28 +4,29 @@ $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'optparse'
 require 'ostruct'
 require 'debugger'
-require 'debugger/xml'
+require 'debugger_xml'
 
 class RdebugVim
 
   def initialize
     check_argv!
-    Debugger.const_set("RDEBUG_SCRIPT", File.expand_path($0))
+    DebuggerXml.wait_for_start = true
+    @proxy = DebuggerXml::DebuggerProxy.new
+    @proxy.tracing = false
+    @proxy.printer = Printers::Xml.new
+    @proxy.set_rdebug_script(File.expand_path($0))
+    @proxy.set_prog_script(options.script)
     install_interruption_hander
-    Debugger.tracing = false
-    Debugger.wait_for_start = true
-    Debugger.printer = Printers::Xml.new
-    Debugger.const_set("PROG_SCRIPT", options.script)
-    Debugger::Xml.logger = if options.debug_mode
-       Debugger::Xml::Vim::Logger.new(options.logger_file)
+    DebuggerXml.logger = if options.debug_mode
+       DebuggerXml::Vim::Logger.new(options.logger_file)
     else
-       Debugger::Xml::FakeLogger.new
+       DebuggerXml::FakeLogger.new
     end
   end
 
   def run
-    Debugger.start_for_vim(options)
-    bt = Debugger.debug_load(Debugger::PROG_SCRIPT, false, false)
+    DebuggerXml.start_for_vim(@proxy, options)
+    bt = @proxy.debug_load
     if bt
       print bt.backtrace.map{|l| "\t#{l}"}.join("\n"), "\n"
       print "Uncaught exception: #{bt}\n"
@@ -44,7 +45,7 @@ class RdebugVim
     end
 
     def install_interruption_hander
-      trap('INT') { Debugger.interrupt_last }
+      trap('INT') { @proxy.interrupt_last }
     end
 
     def options

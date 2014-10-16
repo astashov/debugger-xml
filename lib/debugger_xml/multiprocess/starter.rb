@@ -5,6 +5,6 @@ if ENV['IDE_PROCESS_DISPATCHER']
     next unless path =~ /debugger-xml|\/debugger\/|linecache/
     $LOAD_PATH << path
   end
-  require 'debugger/xml'
-  Debugger::Xml::MultiProcess.pre_child
+  require 'debugger_xml'
+  DebuggerXml::MultiProcess.pre_child
 end
