@@ -1,6 +1,9 @@
-require "debugger"
-require "debugger/printers/xml"
-Dir.glob(File.expand_path("../**/*.rb", __FILE__)).each { |f| require f }
+Dir.glob(File.expand_path("../debugger_xml/**/*.rb", __FILE__)).each { |f| require f }
+if DEBUGGER_TYPE == :debugger
+  Dir.glob(File.expand_path("../debugger/**/*.rb", __FILE__)).each { |f| require f }
+else
+  Dir.glob(File.expand_path("../byebug/**/*.rb", __FILE__)).each { |f| require f }
+end
 
 module DebuggerXml
   class << self
@@ -11,7 +14,7 @@ module DebuggerXml
       @mutex = Mutex.new
       @proceed = ConditionVariable.new
       proxy.start
-      @control_thread = DebugThread.new do
+      @control_thread = proxy.debug_thread_class.new do
         server = TCPServer.new(host, port)
         $stderr.printf "Fast Debugger (debugger-xml #{VERSION}) listens on #{host}:#{port}\n"
         while (session = server.accept)

@@ -1,0 +1,122 @@
+general:
+  errors:
+    unsupported: "Unsupported command '{cmd}'"
+
+breakpoints:
+  set_breakpoint_to_line:
+    tag: breakpointAdded
+    attributes:
+      "no": "{id}"
+      location: "{file}:{line}"
+  set_breakpoint_to_method:
+    tag: breakpointAdded
+    attributes:
+      "no": "{id}"
+      method: "{class}::{method}"
+  stop_at_breakpoint:
+    tag: breakpoint
+    attributes:
+      file: "{file}"
+      line: "{line}"
+      threadId: "{thread_id}"
+  delete:
+    tag: breakpointDeleted
+    attributes:
+      "no": "{id}"
+
+conditions:
+  set_condition:
+    tag: conditionSet
+    attributes:
+      bp_id: "{id}"
+  unset_condition:
+    tag: conditionSet # Would ideally be conditionUnset, but we keep compatibility with old ruby-debug-ide
+    attributes:
+      bp_id: "{id}"
+
+display:
+  result:
+    tag: display
+    attributes:
+      key: "{exp}"
+      value: "{result}"
+
+eval:
+  exception:
+    tag: processingException
+    attributes:
+      type: "{class}"
+      message: "{value}"
+  result:
+    tag: eval
+    attributes:
+      expression: "{expr}"
+      value: "{result}"
+
+frame:
+  line:
+    tag: frame
+    attributes:
+      "no": "{pos}"
+      file: "{file}"
+      line: "{line}"
+      current: "{mark}"
+
+method:
+  methods:
+    tag: method
+    attributes:
+      name: "{name}"
+
+stop:
+  suspend:
+    tag: suspended
+    attributes:
+      file: "{file}"
+      line: "{line_number}"
+      threadId: "{thnum}"
+      frames: "{frames}"
+
+toggle:
+  breakpoint_enabled:
+    tag: breakpointEnabled
+    attributes:
+      bp_id: "{id}"
+  breakpoint_disabled:
+    tag: breakpointDisabled
+    attributes:
+      bp_id: "{id}"
+
+restart:
+  success:
+    tag: restart
+    attributes:
+      command: "{cmd}"
+
+set:
+  errors:
+    no_subcommand: "'set' must be followed by the name of a subcommand"
+
+show:
+  errors:
+    no_subcommand: "'show' must be followed by the name of a subcommand"
+
+thread:
+  context:
+    tag: thread
+    attributes:
+      id: "{id}"
+      status: "{status}"
+      current: "{current}"
+      pid: "{pid}"
+
+variable:
+  variable:
+    tag: variable
+    attributes:
+      name: "{name}"
+      kind: "{kind}"
+      value: "{value}"
+      type: "{type}"
+      hasChildren: "{has_children}"
+      objectId: "{id}"

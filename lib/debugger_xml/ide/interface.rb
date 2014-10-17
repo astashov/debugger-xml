@@ -65,6 +65,10 @@ module DebuggerXml
         @socket.print(value)
       end
 
+      def puts(*args)
+        print(*args)
+      end
+
     end
   end
 end

@@ -1,5 +1,3 @@
-require 'ruby-debug/processor'
-
 module DebuggerXml
   module Ide
     class Processor
