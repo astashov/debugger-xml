@@ -38,7 +38,6 @@ module Byebug
     end
   end
 
-  # Implements the debugger 'var local' command.
   class VarIdeCommand < Command
     def regexp
       /^\s*v(?:ar)?\s+ide\s*$/

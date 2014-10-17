@@ -20,4 +20,18 @@ module Debugger
     alias_method :execute, :execute_with_xml
 
   end
+
+  class VarIdeCommand < Command
+    def regexp
+      /^\s*v(?:ar)?\s+ide\s*$/
+    end
+
+    def execute
+      locals = []
+      _self = @state.context.frame_self(@state.frame_pos)
+      locals << ['self', _self] unless _self.to_s == "main"
+      locals += @state.context.frame_locals(@state.frame_pos).sort.map { |key, value| [key, value] }
+      print prv(locals, 'instance')
+    end
+  end
 end
