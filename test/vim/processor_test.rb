@@ -17,7 +17,7 @@ describe DebuggerXml::Vim::Processor do
     it "must send response" do
       processor = stub
       processor.stubs(:process_command).with("where")
-      processor.stubs(:process_command).with("var local")
+      processor.stubs(:process_command).with("var ide")
       DebuggerXml::Vim::ControlCommandProcessor.stubs(:new).with(interface, $proxy).returns(processor)
       interface.expects(:send_response)
       subject.at_line(context, file, 30)
@@ -26,7 +26,7 @@ describe DebuggerXml::Vim::Processor do
     it "must process additional commands" do
       processor = stub
       processor.expects(:process_command).with("where")
-      processor.expects(:process_command).with("var local")
+      processor.expects(:process_command).with("var ide")
       DebuggerXml::Vim::ControlCommandProcessor.expects(:new).with(interface, $proxy).returns(processor)
       interface.stubs(:send_response)
       subject.at_line(context, file, 30)
