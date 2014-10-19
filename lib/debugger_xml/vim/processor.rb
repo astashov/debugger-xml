@@ -4,14 +4,16 @@ module DebuggerXml
   module Vim
 
     class Processor < Ide::Processor
-      private
-        def stop_thread
-          processor = Vim::ControlCommandProcessor.new(@interface, @proxy)
-          processor.process_command("where")
-          processor.process_command("var ide")
-          @interface.send_response
-          super
-        end
+      def initialize(control_command_processor, *args)
+        @control_command_processor = control_command_processor
+        super(*args)
+      end
+
+      def stop_thread
+        @control_command_processor.process_command("where")
+        @control_command_processor.process_command("var ide")
+        super
+      end
     end
 
   end

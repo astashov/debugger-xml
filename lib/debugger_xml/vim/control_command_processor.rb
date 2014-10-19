@@ -4,13 +4,17 @@ module DebuggerXml
   module Vim
 
     class ControlCommandProcessor < Ide::ControlCommandProcessor
-      private
+      def initialize(*args)
+        super(*args)
+        @mutex = Mutex.new
+      end
 
-        def process_input(input)
-          super(input)
+      def process_command(*args)
+        @mutex.synchronize do
+          super(*args)
           @interface.send_response
         end
-
+      end
     end
   end
 end
