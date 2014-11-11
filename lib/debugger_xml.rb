@@ -7,12 +7,13 @@ end
 
 module DebuggerXml
   class << self
-    attr_accessor :logger, :wait_for_start, :control_thread, :handler
+    attr_accessor :logger, :wait_for_start, :control_thread, :handler, :queue
 
     def start_remote_ide(proxy, host, port)
       return if @control_thread
       @mutex = Mutex.new
       @proceed = ConditionVariable.new
+      @queue = Queue.new
       proxy.start
       @control_thread = proxy.debug_thread_class.new do
         server = TCPServer.new(host, port)
@@ -23,8 +24,8 @@ module DebuggerXml
             ENV['IDE_PROCESS_DISPATCHER'] = "#{session.peeraddr[2]}:#{dispatcher}"
           end
           interface = DebuggerXml::Ide::Interface.new(session)
-          debugger_class.handler = DebuggerXml::Ide::Processor.new(interface, proxy)
           processor = DebuggerXml::Ide::ControlCommandProcessor.new(interface, proxy)
+          debugger_class.handler = DebuggerXml::Ide::Processor.new(interface, proxy)
           processor.process_commands
         end
       end
@@ -42,6 +43,7 @@ module DebuggerXml
       logger.puts("Redirected stderr")
       @mutex = Mutex.new
       @proceed = ConditionVariable.new
+      @queue = Queue.new
       proxy.start
       logger.puts("Started debugger")
       File.unlink(options.socket) if File.exist?(options.socket)
@@ -53,8 +55,8 @@ module DebuggerXml
           while (session = server.accept)
             logger.puts("Accepted connection");
             interface = Vim::Interface.new(session, options)
-            proxy.handler = Vim::Processor.new(interface, proxy)
             processor = Vim::ControlCommandProcessor.new(interface, proxy)
+            proxy.handler = Vim::Processor.new(processor, interface, proxy)
             logger.puts("Going to process commands");
             processor.process_commands
           end
