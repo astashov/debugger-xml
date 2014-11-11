@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 
+DEBUGGER_TYPE = :debugger
+require 'debugger'
 require 'debugger_xml'
 
 $debugger_test_dir = File.expand_path("..", __FILE__)

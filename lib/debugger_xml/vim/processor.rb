@@ -8,7 +8,7 @@ module DebuggerXml
         def stop_thread
           processor = Vim::ControlCommandProcessor.new(@interface, @proxy)
           processor.process_command("where")
-          processor.process_command("var local")
+          processor.process_command("var ide")
           @interface.send_response
           super
         end

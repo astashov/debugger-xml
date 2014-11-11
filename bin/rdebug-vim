@@ -3,24 +3,40 @@
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'optparse'
 require 'ostruct'
-require 'debugger'
+
+DEBUGGER_TYPE = if RUBY_VERSION < "2.0"
+  require 'debugger'
+  :debugger
+else
+  require 'byebug'
+  :byebug
+end
+
 require 'debugger_xml'
+
+if DEBUGGER_TYPE == :debugger
+  PROXY_CLASS = DebuggerXml::DebuggerProxy
+  PRINTER_CLASS = Printers::Xml
+else
+  PROXY_CLASS = DebuggerXml::ByebugProxy
+  PRINTER_CLASS = Byebug::Printers::Xml
+end
 
 class RdebugVim
 
   def initialize
     check_argv!
     DebuggerXml.wait_for_start = true
-    @proxy = DebuggerXml::DebuggerProxy.new
+    @proxy = PROXY_CLASS.new
     @proxy.tracing = false
-    @proxy.printer = Printers::Xml.new
+    @proxy.printer = PRINTER_CLASS.new
     @proxy.set_rdebug_script(File.expand_path($0))
     @proxy.set_prog_script(options.script)
     install_interruption_hander
     DebuggerXml.logger = if options.debug_mode
-       DebuggerXml::Vim::Logger.new(options.logger_file)
+      DebuggerXml::Vim::Logger.new(options.logger_file)
     else
-       DebuggerXml::FakeLogger.new
+      DebuggerXml::FakeLogger.new
     end
   end
 

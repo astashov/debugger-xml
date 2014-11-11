@@ -1,4 +1,4 @@
-module Debugger
+module Byebug
   module VarFunctions # :nodoc:
 
     def var_global
@@ -9,8 +9,10 @@ module Debugger
   class VarInstanceCommand < Command
 
     def execute_with_xml(*args)
-      if Debugger.printer.type == "xml"
-        print Debugger.printer.print_instance_variables(get_obj(@match))
+      if Byebug.printer.type == "xml"
+        DebuggerXml.logger.puts("match: #{@match}")
+        DebuggerXml.logger.puts("THE OBJ: #{get_obj(@match).inspect}")
+        print Byebug.printer.print_instance_variables(get_obj(@match))
       else
         execute_without_xml(*args)
       end
@@ -19,6 +21,21 @@ module Debugger
     alias_method :execute_without_xml, :execute
     alias_method :execute, :execute_with_xml
 
+    private
+
+    def get_obj(match)
+      if match[1]
+        begin
+          DebuggerXml.logger.puts("Getting object space")
+          ObjectSpace._id2ref(match[1].hex)
+        rescue RangeError
+          errmsg "Unknown object id : %s" % match[1]
+          nil
+        end
+      else
+        bb_warning_eval(match.post_match.empty? ? 'self' : match.post_match)
+      end
+    end
   end
 
   class VarIdeCommand < Command
