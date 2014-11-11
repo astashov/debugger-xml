@@ -1,6 +1,6 @@
 ## Description
 
-This is a gem, which adds the XML printer to the 'debugger' gem, using the same API as
+This is a gem, which adds the XML printer to the 'debugger' or 'byebug' gems, using the same API as
 the ruby-debug-ide gem, which allows it to be used with Ruby IDEs (for example, in my
 vim-ruby-debugger :))
 
