@@ -9,14 +9,12 @@ module DebuggerXml
         @mutex = Mutex.new
       end
 
-      private
-
-        def process_command(*args)
-          @mutex.synchronize do
-            super(*args)
-            @interface.send_response
-          end
+      def process_command(*args)
+        @mutex.synchronize do
+          super(*args)
+          @interface.send_response
         end
+      end
 
     end
   end

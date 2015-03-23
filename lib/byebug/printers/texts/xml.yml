@@ -2,6 +2,13 @@ general:
   errors:
     unsupported: "Unsupported command '{cmd}'"
 
+break:
+  created:
+    tag: breakpointAdded
+    attributes:
+      "no": "{id}"
+      location: "{file}:{line}"
+
 breakpoints:
   set_breakpoint_to_line:
     tag: breakpointAdded

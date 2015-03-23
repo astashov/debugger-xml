@@ -13,7 +13,7 @@ module DebuggerXml
         escaped_args = escape_input(args)
         value = escaped_args.first % escaped_args[1..-1]
         DebuggerXml.logger.puts("Going to print: #{value}")
-        @output << sprintf(value)
+        @output << value
       end
 
       def send_response

@@ -1,5 +1,7 @@
 module DebuggerXml
   class ByebugProxy
+    include Byebug::FileFunctions
+
     def start
       ::Byebug.start
     end
@@ -14,12 +16,12 @@ module DebuggerXml
 
     def control_commands(interface)
       control_command_classes = commands.select(&:allow_in_control)
-      state = ::Byebug::ControlCommandProcessor::State.new(interface, control_command_classes)
+      state = ::Byebug::ControlState.new(interface)
       control_command_classes.map { |cmd| cmd.new(state) }
     end
 
     def build_command_processor_state(interface)
-      ::Byebug::CommandProcessor::State.new(commands, handler.context, [], handler.file, interface, handler.line)
+      ::Byebug::RegularXmlState.new(handler.context, [], handler.file, interface, handler.line)
     end
 
     def commands
@@ -35,7 +37,7 @@ module DebuggerXml
     end
 
     def canonic_file(file)
-      ::Byebug::CommandProcessor.canonic_file(file)
+      normalize(file)
     end
 
     def line_at(file, line)
