@@ -3,6 +3,7 @@
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'optparse'
 require 'ostruct'
+
 DEBUGGER_TYPE = if RUBY_VERSION < "2.0"
   require 'debugger'
   :debugger
@@ -10,7 +11,7 @@ else
   require 'byebug'
   :byebug
 end
-require 'debugger/xml'
+require 'debugger_xml'
 if DEBUGGER_TYPE == :debugger
   PROXY_CLASS = DebuggerXml::DebuggerProxy
   PRINTER_CLASS = Printers::Xml
