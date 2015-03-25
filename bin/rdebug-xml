@@ -86,8 +86,8 @@ class RdebugIde
         )
         opts = OptionParser.new do |opts|
           opts.banner = %{
-            Using rdebug-ide
-            Usage: rdebug-ide is supposed to be called from RDT, NetBeans, RubyMine or
+            Using rdebug-xml
+            Usage: rdebug-xml is supposed to be called from RDT, NetBeans, RubyMine or
             vim-ruby-debugger. The command line interface to 'debugger' is rdebug.
           }.gsub(/^\s*/, '')
           opts.separator ""
