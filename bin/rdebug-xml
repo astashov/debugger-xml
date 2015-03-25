@@ -3,8 +3,21 @@
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'optparse'
 require 'ostruct'
-require 'debugger'
+DEBUGGER_TYPE = if RUBY_VERSION < "2.0"
+  require 'debugger'
+  :debugger
+else
+  require 'byebug'
+  :byebug
+end
 require 'debugger/xml'
+if DEBUGGER_TYPE == :debugger
+  PROXY_CLASS = DebuggerXml::DebuggerProxy
+  PRINTER_CLASS = Printers::Xml
+else
+  PROXY_CLASS = DebuggerXml::ByebugProxy
+  PRINTER_CLASS = Byebug::Printers::Xml
+end
 
 $stdout.sync = true
 
@@ -12,7 +25,7 @@ class RdebugIde
 
   def initialize
     check_argv!
-    @proxy = DebuggerXml::DebuggerProxy.new
+    @proxy = PROXY_CLASS.new
     @proxy.set_argv(ARGV.clone)
     @proxy.set_rdebug_script(rdebug_path)
     @proxy.set_prog_script(ARGV.shift)
@@ -20,7 +33,7 @@ class RdebugIde
       install_interruption_handler
     end
     @proxy.tracing = options.tracing
-    @proxy.printer = Printers::Xml.new
+    @proxy.printer = PRINTER_CLASS.new
     @proxy.wait_connection = true
     DebuggerXml.wait_for_start = options.wait_for_start
     Debugger::Xml.logger = if options.debug_mode
