@@ -58,11 +58,11 @@ module DebuggerXml
         Debugger.tracing = options.tracing
         Debugger.wait_for_start = options.wait_for_start
         Debugger.wait_connection = true
-        Debugger.printer = Printers::Xml.new
+        Debugger.printer = PRINTER_CLASS.new
         DebuggerXml.logger = if options.debug_mode
-          Debugger::Xml::Ide::Logger.new
+          DebuggerXml::Ide::Logger.new
         else
-          Debugger::Xml::FakeLogger.new
+          DebuggerXml::FakeLogger.new
         end
         DebuggerXml.start_remote_ide(options.host, options.port)
       end
