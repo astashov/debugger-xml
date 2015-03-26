@@ -25,7 +25,7 @@ module DebuggerXml
           end
           interface = DebuggerXml::Ide::Interface.new(session)
           processor = DebuggerXml::Ide::ControlCommandProcessor.new(interface, proxy)
-          debugger_class.handler = DebuggerXml::Ide::Processor.new(interface, proxy)
+          proxy.handler = DebuggerXml::Ide::Processor.new(interface, proxy)
           processor.process_commands
         end
       end
