@@ -69,6 +69,14 @@ module DebuggerXml
         print(*args)
       end
 
+      private
+
+      def escape_input(args)
+        new_args = args.dup
+        new_args.first.gsub!("%", "%%") if args.first.is_a?(String)
+        new_args
+      end
+
     end
   end
 end
