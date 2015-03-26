@@ -28,6 +28,8 @@ class RdebugIde
     check_argv!
     @proxy = PROXY_CLASS.new
     @proxy.set_argv(ARGV.clone)
+    # todo: we need to parse args first, need to make in more elegant way
+    options
     @proxy.set_rdebug_script(rdebug_path)
     @proxy.set_prog_script(ARGV.shift)
     if options.int_handler
@@ -37,17 +39,17 @@ class RdebugIde
     @proxy.printer = PRINTER_CLASS.new
     @proxy.wait_connection = true
     DebuggerXml.wait_for_start = options.wait_for_start
-    Debugger::Xml.logger = if options.debug_mode
-      Debugger::Xml::Ide::Logger.new
+    DebuggerXml.logger = if options.debug_mode
+      DebuggerXml::Ide::Logger.new
     else
-      Debugger::Xml::FakeLogger.new
+      DebuggerXml::FakeLogger.new
     end
     init_multi_process_debug(options) if options.dispatcher_port
   end
 
   def run
-    Debugger.start_remote_ide(options.host, options.port)
-    bt = Debugger.debug_load(Debugger::PROG_SCRIPT, false, false)
+    DebuggerXml.start_remote_ide(@proxy, options.host, options.port)
+    bt = @proxy.debug_load
     if bt
       print bt.backtrace.map{|l| "\t#{l}"}.join("\n"), "\n"
       print "Uncaught exception: #{bt}\n"
