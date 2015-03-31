@@ -20,7 +20,8 @@ module Byebug
         IGNORED_XML_FILES.include?(path) ||
         !!path.match(/^\(eval\)/) ||
         !!path.match(/rdebug-vim$/) ||
-        !!path.match(/rdebug-ide$/)
+        !!path.match(/rdebug-ide$/) ||
+        !!path.match(/rdebug-xml$/)
       result
     end
 
