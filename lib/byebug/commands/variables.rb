@@ -16,6 +16,7 @@ module Byebug
   end
   class VarCommand < Command
     Subcommands << Subcmd.new('ide', 1, 'Shows set of variables for IDE usage')
+    Subcommands << Subcmd.new('inspect', 7, 'inspect a given object (supposed to be used only from ide)')
 
     def var_instance_with_xml(*args)
       if Byebug.printer.type == "xml"
@@ -29,6 +30,15 @@ module Byebug
 
     alias_method :var_instance_without_xml, :var_instance
     alias_method :var_instance, :var_instance_with_xml
+
+    # reference inspection results in order to save them from the GC
+    @@references = []
+    def self.reference_result(result)
+      @@references << result
+    end
+    def self.clear_references
+      @@references = []
+    end
 
     private
 
@@ -44,6 +54,12 @@ module Byebug
       else
         bb_warning_eval(match.post_match.empty? ? 'self' : match.post_match)
       end
+    end
+
+    def var_inspect(obj_ref)
+      obj = bb_eval(obj_ref)
+      VarCommand.reference_result(obj)
+      print prv({eval_result: obj}, 'local')
     end
   end
 

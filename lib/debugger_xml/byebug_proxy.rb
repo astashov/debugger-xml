@@ -4,6 +4,7 @@ if Object.const_defined?("Byebug")
       include Byebug::FileFunctions
 
       def start
+        ::Byebug::Setting[:autolist] = false
         ::Byebug.start
       end
 
@@ -93,7 +94,7 @@ if Object.const_defined?("Byebug")
       end
 
       def inspect_command_class
-        ::Byebug::InspectCommand
+        ::Byebug::VarCommand
       end
 
       private
