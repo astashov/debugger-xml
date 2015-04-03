@@ -17,7 +17,7 @@ module DebuggerXml
       proxy.start
       @control_thread = proxy.debug_thread_class.new do
         server = TCPServer.new(host, port)
-        $stderr.printf "Fast Debugger (debugger-xml #{VERSION}) listens on #{host}:#{port}\n"
+        $stderr.printf "Fast Debugger (debugger-xml #{VERSION}, #{proxy.gem_info}) listens on #{host}:#{port}\n"
         while (session = server.accept)
           dispatcher = ENV['IDE_PROCESS_DISPATCHER']
           if dispatcher && !dispatcher.include?(":")

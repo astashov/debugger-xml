@@ -97,6 +97,10 @@ if Object.const_defined?("Byebug")
         ::Byebug::VarCommand
       end
 
+      def gem_info
+        "byebug #{::Byebug::VERSION}"
+      end
+
       private
 
       def event_command_classes

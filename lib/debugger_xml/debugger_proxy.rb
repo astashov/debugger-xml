@@ -101,6 +101,10 @@ module DebuggerXml
       ::Debugger::InspectCommand
     end
 
+    def gem_info
+      "debugger #{::Debugger::VERSION}"
+    end
+
     private
 
     def event_command_classes
