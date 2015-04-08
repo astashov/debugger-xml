@@ -65,7 +65,7 @@ frame:
     tag: frame
     attributes:
       "no": "{pos}"
-      file: "{file}"
+      file: "{full_path}"
       line: "{line}"
       current: "{mark}"
 

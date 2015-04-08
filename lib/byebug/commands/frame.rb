@@ -3,7 +3,6 @@ module Byebug
 
     def get_pr_arguments_with_xml(frame_no)
       res = get_pr_arguments_without_xml(frame_no)
-      res[:file] = File.expand_path(res[:file])
       res[:pos] = res[:pos].strip
       res
     end
