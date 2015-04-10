@@ -1,10 +1,6 @@
 module Byebug
   module VarFunctions # :nodoc:
 
-    def var_global(*args)
-      var_list(global_variables.reject { |v| [:$=, :$KCODE, :$-K, :$FILENAME].include?(v) })
-    end
-
     def var_ide(*args)
       locals = []
       _self = @state.context.frame_self(@state.frame)
