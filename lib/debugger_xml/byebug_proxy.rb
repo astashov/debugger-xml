@@ -1,7 +1,7 @@
 if Object.const_defined?("Byebug")
   module DebuggerXml
     class ByebugProxy
-      include Byebug::FileFunctions
+      include Byebug::Helpers::FileHelper
 
       def start
         ::Byebug::Setting[:autolist] = false
@@ -27,7 +27,7 @@ if Object.const_defined?("Byebug")
       end
 
       def commands
-        ::Byebug::Command.commands
+        ::Byebug::commands
       end
 
       def event_commands(state)
@@ -93,8 +93,9 @@ if Object.const_defined?("Byebug")
         ::Byebug.debug_load(::Byebug::PROG_SCRIPT, false)
       end
 
+      # todo: replace with method which calls clear_refs instead
       def inspect_command_class
-        ::Byebug::VarCommand
+        ::Byebug::VarCommand::InspectCommand
       end
 
       def gem_info
