@@ -93,9 +93,8 @@ if Object.const_defined?("Byebug")
         ::Byebug.debug_load(::Byebug::PROG_SCRIPT, false)
       end
 
-      # todo: replace with method which calls clear_refs instead
-      def inspect_command_class
-        ::Byebug::VarCommand::InspectCommand
+      def clear_references
+        ::Byebug::VarCommand::InspectCommand.clear_references
       end
 
       def gem_info

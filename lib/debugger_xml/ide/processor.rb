@@ -107,7 +107,7 @@ module DebuggerXml
           @file = nil
           @context = nil
           @last_breakpoint = nil
-          @proxy.inspect_command_class.clear_references
+          @proxy.clear_references
         end
 
         def stop_thread

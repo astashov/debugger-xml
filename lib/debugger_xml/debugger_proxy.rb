@@ -97,8 +97,8 @@ module DebuggerXml
       ::Debugger.debug_load(::Debugger::PROG_SCRIPT, false, false)
     end
 
-    def inspect_command_class
-      ::Debugger::InspectCommand
+    def clear_references
+      ::Debugger::InspectCommand.clear_references
     end
 
     def gem_info
