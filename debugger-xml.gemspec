@@ -18,11 +18,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  if RUBY_VERSION < "2.0"
-    gem.add_dependency 'debugger'
-  else
-    gem.add_dependency 'byebug'
-  end
+  gem.extensions << 'ext/mkrf_conf.rb'
+
   gem.add_dependency 'builder', '>= 2.0.0'
   gem.add_development_dependency 'rake', '~> 0.9.2.2'
   gem.add_development_dependency 'minitest', '~> 2.12.1'
