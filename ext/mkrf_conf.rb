@@ -8,7 +8,7 @@ end
 if RUBY_VERSION < '2.0'
   dep = Gem::Dependency.new('debugger', '> 0')
 else
-  dep = Gem::Dependency.new('byebug', '> 0')
+  dep = Gem::Dependency.new('byebug', '>= 5.0.0')
 end
 
 begin
