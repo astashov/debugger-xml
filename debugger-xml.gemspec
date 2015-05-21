@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = DebuggerXml::VERSION
   gem.authors       = ["Anton Astashov"]
   gem.email         = ["anton.astashov@gmail.com"]
-  gem.description   = %q{XML interface for debugger}
-  gem.summary       = %q{Implements XML interface for the 'debugger' gem, compatible with ruby-debug-ide gem}
+  gem.description   = %q{XML interface for debugger/byebug}
+  gem.summary       = %q{Implements XML interface for the 'debugger'/'byebug' gem, compatible with ruby-debug-ide gem}
   gem.homepage      = ""
   gem.license       = 'MIT'
 
