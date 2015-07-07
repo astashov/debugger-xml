@@ -1,6 +1,8 @@
 general:
   errors:
     unsupported: "Unsupported command '{cmd}'"
+    no_suspended_thread: "There are no suspended threads to execute '{cmd}'"
+    context_unavailable: "Context unavailable for command '{cmd}'"
 
 break:
   created:

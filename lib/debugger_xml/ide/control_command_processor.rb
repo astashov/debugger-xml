@@ -39,7 +39,7 @@ module DebuggerXml
 
       def process_context_commands(input)
         unless @proxy.handler.at_line?
-          @interface.errmsg(@proxy.print("base.errors.no_suspended_thread", input: input))
+          @interface.errmsg(@proxy.print("general.errors.no_suspended_thread", cmd: input))
           return
         end
         state = @proxy.build_command_processor_state(@interface)
@@ -47,12 +47,12 @@ module DebuggerXml
         catch(:debug_error) do
           if cmd = event_commands.find { |c| c.match(input) }
             if state.context.dead? && cmd.class.need_context
-              @interface.print(@proxy.print("base.errors.command_unavailable"))
+              @interface.print(@proxy.print("general.errors.context_unavailable", cmd: input))
             else
               cmd.execute
             end
           else
-            @interface.print(@proxy.print("base.errors.unknown_command", input: input))
+            @interface.print(@proxy.print("general.errors.unknown_command", cmd: input))
           end
         end
         state.context.thread.run if state.proceed?
